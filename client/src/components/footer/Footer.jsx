@@ -1,5 +1,7 @@
 import React from "react";
 import "./footer.scss";
+import paymentImage from "../../assets/payment.png";
+
 
 const Footer = () => {
     return (
@@ -42,13 +44,13 @@ const Footer = () => {
             </div>
             <div className="bottom">
                 <div className="left">
-                    <span className="logo">Lamastore</span>
+                    <span className="logo">ZenShop</span>
                     <span className="copyright">
                         © Copyright 2023. All Rights Reserved
                     </span>
                 </div>
                 <div className="right">
-                    <img src="/img/payment.png" alt="" />
+                    <img src={paymentImage} alt="" />
                 </div>
             </div>
         </div>
