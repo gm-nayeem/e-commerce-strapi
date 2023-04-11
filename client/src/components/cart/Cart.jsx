@@ -4,8 +4,8 @@ import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import { useSelector, useDispatch } from "react-redux";
 import { removeItem, resetCart } from "../../redux/cartReducer";
 import { makeRequest } from "../../utils/makeRequest";
+import { REACT_APP_UPLOAD_URL, STRIPE_PUBLIC_KEY } from "../../private";
 import { loadStripe } from "@stripe/stripe-js";
-import { REACT_APP_UPLOAD_URL } from "../../private";
 
 const Cart = () => {
     const products = useSelector((state) => state.cart.products);
@@ -20,9 +20,7 @@ const Cart = () => {
         return total.toFixed(2);
     };
 
-    const stripePromise = loadStripe(
-        "pk_test_eOTMlr8usx1ctymXqrik0ls700lQCsX2UB"
-    );
+    const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
 
     const handlePayment = async () => {
         try {
