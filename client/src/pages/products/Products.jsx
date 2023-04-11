@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Products.scss";
 import { useParams } from "react-router-dom";
 import List from "../../components/list/List";
@@ -7,12 +7,23 @@ import useFetch from "../../hooks/useFetch";
 const Products = () => {
     const catId = parseInt(useParams().id);
     const [maxPrice, setMaxPrice] = useState(1000);
-    const [sort, setSort] = useState(null);
+    const [sort, setSort] = useState("asc");
     const [selectedSubCats, setSelectedSubCats] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(false);
 
-    const { data, loading, error } = useFetch(
+    const { data, loading:categoryLoading, error: categoryError } = useFetch(
         `/sub-categories?[filters][categories][id][$eq]=${catId}`
     );
+
+    useEffect(() => {
+        setLoading(categoryLoading);
+        setCategories(data);
+        setError(categoryError);
+    }, [data, categoryError, categoryLoading]);
+
+    // console.log("price: " + maxPrice, "sort: " + sort, "subCat: " + selectedSubCats);
 
     // handle sub categories
     const handleChange = (e) => {
@@ -31,17 +42,25 @@ const Products = () => {
             <div className="left">
                 <div className="filterItem">
                     <h2>Product Categories</h2>
-                    {data?.map((item) => (
-                        <div className="inputItem" key={item.id}>
-                            <input
-                                type="checkbox"
-                                id={item.id}
-                                value={item.id}
-                                onChange={handleChange}
-                            />
-                            <label htmlFor={item.id}>{item.attributes.title}</label>
-                        </div>
-                    ))}
+                    {
+                        loading ? (
+                            "loading"
+                        ) : error ? (
+                            "Something went wrong"
+                        ) : (
+                            categories?.map((item) => (
+                                <div className="inputItem" key={item.id}>
+                                    <input
+                                        type="checkbox"
+                                        id={item.id}
+                                        value={item.id}
+                                        onChange={handleChange}
+                                    />
+                                    <label htmlFor={item.id}>{item.attributes.title}</label>
+                                </div>
+                            ))
+                        )
+                    }
                 </div>
                 <div className="filterItem">
                     <h2>Filter by price</h2>

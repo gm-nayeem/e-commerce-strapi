@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./product.scss";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -13,9 +13,21 @@ const Product = () => {
     const id = useParams().id;
     const [selectedImg, setSelectedImg] = useState("img");
     const [quantity, setQuantity] = useState(1);
+    const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(false);
 
     const dispatch = useDispatch();
-    const { data, loading, error } = useFetch(`/products/${id}?populate=*`);
+    const { 
+        data, loading: productLoading, error: productError 
+    } = useFetch(`/products/${id}?populate=*`);
+
+    useEffect(() => {
+        setLoading(productLoading);
+        setProduct(data);
+        setError(productError);
+    }, [data, productError, productLoading]);
+
 
     return (
         <div className="product">
@@ -30,7 +42,7 @@ const Product = () => {
                             <img
                                 src={
                                     REACT_APP_UPLOAD_URL +
-                                    data?.attributes?.img?.data?.attributes?.url
+                                    product?.attributes?.img?.data?.attributes?.url
                                 }
                                 alt=""
                                 onClick={(e) => setSelectedImg("img")}
@@ -38,7 +50,7 @@ const Product = () => {
                             <img
                                 src={
                                     REACT_APP_UPLOAD_URL +
-                                    data?.attributes?.img2?.data?.attributes?.url
+                                    product?.attributes?.img2?.data?.attributes?.url
                                 }
                                 alt=""
                                 onClick={(e) => setSelectedImg("img2")}
@@ -48,37 +60,37 @@ const Product = () => {
                             <img
                                 src={
                                     REACT_APP_UPLOAD_URL +
-                                    data?.attributes[selectedImg]?.data?.attributes?.url
+                                    product?.attributes[selectedImg]?.data?.attributes?.url
                                 }
                                 alt=""
                             />
                         </div>
                     </div>
                     <div className="right">
-                        <h1>{data?.attributes?.title}</h1>
-                        <span className="price">${data?.attributes?.price}</span>
-                        <p>{data?.attributes?.desc}</p>
+                        <h1 className="title">{product?.attributes?.title}</h1>
+                        <span className="price">${product?.attributes?.price}</span>
+                        <p>{product?.attributes?.desc}</p>
                         <div className="quantity">
                             <button
                                 onClick={() =>
-                                    setQuantity((prev) => (prev === 1 ? 1 : prev - 1))
+                                    setQuantity(prev => (prev === 1 ? 1 : prev - 1))
                                 }
                             >
                                 -
                             </button>
                             {quantity}
-                            <button onClick={() => setQuantity((prev) => prev + 1)}>+</button>
+                            <button onClick={() => setQuantity(prev => prev + 1)}>+</button>
                         </div>
                         <button
                             className="add"
                             onClick={() =>
                                 dispatch(
                                     addToCart({
-                                        id: data.id,
-                                        title: data.attributes.title,
-                                        desc: data.attributes.desc,
-                                        price: data.attributes.price,
-                                        img: data.attributes.img.data.attributes.url,
+                                        id: product.id,
+                                        title: product.attributes.title,
+                                        desc: product.attributes.desc,
+                                        price: product.attributes.price,
+                                        img: product.attributes.img.data.attributes.url,
                                         quantity,
                                     })
                                 )

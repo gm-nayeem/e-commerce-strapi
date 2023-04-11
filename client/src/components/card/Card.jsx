@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { REACT_APP_UPLOAD_URL } from "../../private";
 
 const Card = ({ item }) => {
+    
     return (
         <Link className="link" to={`/product/${item.id}`}>
             <div className="card">

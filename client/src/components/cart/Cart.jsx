@@ -1,9 +1,8 @@
 import React from "react";
 import "./cart.scss";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { removeItem, resetCart } from "../../redux/cartReducer";
-import { useDispatch } from "react-redux";
 import { makeRequest } from "../../utils/makeRequest";
 import { loadStripe } from "@stripe/stripe-js";
 import { REACT_APP_UPLOAD_URL } from "../../private";
@@ -12,6 +11,7 @@ const Cart = () => {
     const products = useSelector((state) => state.cart.products);
     const dispatch = useDispatch();
 
+    // set total price
     const totalPrice = () => {
         let total = 0;
         products.forEach((item) => {
@@ -23,6 +23,7 @@ const Cart = () => {
     const stripePromise = loadStripe(
         "pk_test_eOTMlr8usx1ctymXqrik0ls700lQCsX2UB"
     );
+
     const handlePayment = async () => {
         try {
             const stripe = await stripePromise;
@@ -37,6 +38,7 @@ const Cart = () => {
             console.log(err);
         }
     };
+
     return (
         <div className="cart">
             <h1>Products in your cart</h1>

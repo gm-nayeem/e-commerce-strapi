@@ -37,6 +37,10 @@
         flex-direction: column;
         gap: 30px;
 
+        .title {
+            text-transform: capitalize;
+        }
+
         .price {
             font-size: 30px;
             color: #2879fe;
